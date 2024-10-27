@@ -1,14 +1,20 @@
+// Переменные отвечающие за перетаскивание элементов
 const taskLists = document.querySelectorAll('.task-list')
 const backlogTasks = document.querySelector('#backlog .task-list')
 const doingTasks = document.querySelector('#doing .task-list')
 const doneTasks = document.querySelector('#done .task-list')
 const discardTasks = document.querySelector('#discard .task-list')
-// const titleInput = document.querySelector('#title')
-// const descriptionInput = document.querySelector('#description')
-const submitButton = document.querySelector('#submit-button')
-const errorContainer = document.querySelector('.error-container')
 
+// Переменные для модалки создания задачи
 const addTaskBtn = document.querySelector('.header__button--new-task')
+const closeModalAddTaskBtn = document.querySelector('.add-task-modal__close')
+const addTaskModal = document.querySelector('.add-task-modal')
+
+// Переменные для создания новой задачи
+const newTaskTitle = document.querySelector('#title')
+const newTaskDescription = document.querySelector('#description')
+const newTaskDate = document.querySelector('#date')
+const createTaskBtn = document.querySelector('#create-task')
 
 const currentUser = JSON.parse(localStorage.getItem('currentUser')) || [];
 
@@ -17,32 +23,38 @@ if(currentUser.role !== 'admin') {
   addTaskBtn.classList.add('none')
 }
 
-let tasks = [
-  {
-    id: 0,
-    title: 'Fix submit button',
-    description:
-      'The submit button has stopped working since the last release.',
-    state: 'backlog'
-  },
-  {
-    id: 1,
-    title: "Change text on T and C's",
-    description:
-      'The terms and conditions need updating as per the business meeting.',
-    state: 'done'
-  },
-  {
-    id: 2,
-    title: 'Change banner picture',
-    description:
-      'Marketing has requested a new banner to be added to the website.',
-    state: 'doing'
-  },
-]
+addTaskBtn.addEventListener('click', newTask)
+closeModalAddTaskBtn.addEventListener('click', closeModalAddTask)
+
+// let tasks = [
+//   {
+//     id: 0,
+//     title: 'Fix submit button',
+//     description:
+//       'The submit button has stopped working since the last release.',
+//     state: 'backlog',
+//     date: '15.09.2024'
+//   },
+//   {
+//     id: 1,
+//     title: "Change text on T and C's",
+//     description:
+//       'The terms and conditions need updating as per the business meeting.',
+//     state: 'done',
+//     date: '15.09.2024'
+//   },
+//   {
+//     id: 2,
+//     title: 'Change banner picture',
+//     description:
+//       'Marketing has requested a new banner to be added to the website.',
+//     state: 'doing',
+//     date: '15.09.2024'
+//   },
+// ]
 
 
-localStorage.setItem('tasks', JSON.stringify(tasks));
+// localStorage.setItem('tasks', JSON.stringify(tasks));
 
 
 const currentTasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -53,7 +65,7 @@ taskLists.forEach((taskList) => {
   taskList.addEventListener('drop', dragDrop)
 })
 
-function createTask(taskId, title, description, state) {
+function createTask(taskId, title, description, state, date) {
   
   const taskCard = 
     `
@@ -66,7 +78,7 @@ function createTask(taskId, title, description, state) {
             </div>
           </div>
           <div class="task-footer">
-            <div class="task-date">до 15.09.2024</div>
+            <div class="task-date">до ${date}</div>
             <div class="task-comment">
               <img src="./img/task-comment.svg" alt="" />
               1
@@ -123,7 +135,7 @@ function addColor(column) {
 
 function addTasks() {
   currentTasks.forEach((task) => 
-   createTask(task.id, task.title, task.description, task.state)
+   createTask(task.id, task.title, task.description, task.state, task.date)
   )
 }
 
@@ -145,10 +157,7 @@ function dragDrop() {
   decor.style.backgroundColor = addColor(columnId)
   elementBeingDragged.setAttribute('data-task-state', columnId)
   this.append(elementBeingDragged)
-  let taskId = elementBeingDragged.getAttribute('data-task-id')
-
-  console.log(currentTasks);
-  
+  let taskId = elementBeingDragged.getAttribute('data-task-id')  
 
   currentTasks.forEach(task => {
     if (task.id === +taskId) {
@@ -174,37 +183,54 @@ function showError(message) {
 
 function addTask(e) {
   e.preventDefault()
-  const filteredTitles = tasks.filter((task) => {
-    return task.title === titleInput.value
+  const filteredTitles = currentTasks.filter((task) => {
+    return task.title === newTaskTitle.value
   })
 
   if (!filteredTitles.length) {
-    const newId = tasks.length
-    tasks.push({
+    const newId = currentTasks.length
+    currentTasks.push({
       id: newId,
-      title: titleInput.value,
-      description: descriptionInput.value,
+      title: newTaskTitle.value,
+      description: newTaskDescription.value,
+      date: newTaskDate.value,
       state: 'backlog'
     })
-    createTask(newId, titleInput.value, descriptionInput.value)
-    titleInput.value = ''
-    descriptionInput.value = ''
+    localStorage.setItem('tasks', JSON.stringify(currentTasks));
+    createTask(newId, newTaskTitle.value, newTaskDescription.value, state = 'backlog', newTaskDate.value)
+    addTaskModal.classList.remove('open')
+    newTaskTitle.value = ''
+    newTaskDescription.value = ''
+    newTaskDate.value = ''
   } else {
     showError('Title must be unique!')
   }
 }
-submitButton.addEventListener('click', addTask)
+createTaskBtn.addEventListener('click', addTask)
 
-function deleteTask() {
-  const headerTitle = this.parentNode.firstChild.textContent
+// function deleteTask() {
+//   const headerTitle = this.parentNode.firstChild.textContent
 
-  const filteredTasks = tasks.filter((task) => {
-    return task.title === headerTitle
-  })
+//   const filteredTasks = tasks.filter((task) => {
+//     return task.title === headerTitle
+//   })
 
-  tasks = tasks.filter((task) => {
-    return task !== filteredTasks[0]
-  })
+//   tasks = tasks.filter((task) => {
+//     return task !== filteredTasks[0]
+//   })
   
-  this.parentNode.parentNode.remove()
+//   this.parentNode.parentNode.remove()
+// }
+
+
+
+// Добавление новой задачи
+
+function newTask() {
+    addTaskModal.classList.add('open')
+}
+
+function closeModalAddTask() {
+  addTaskModal.classList.remove('open')
+
 }

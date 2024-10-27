@@ -100,6 +100,25 @@
 
     <div class="error-container"></div>
 
+    <div class="add-task-modal">
+        <div class="add-task-modal__container">
+            <h3 class="auth__title auth__title--sm">Создать новую задачу</h3>
+            <form class="add-task-modal__form" action="">
+                <input required id="title" class="auth__input" type="text" placeholder="Название задачи">
+                <textarea required id="description" class="auth__input" name="" id="" placeholder="Описание задачи"></textarea>
+                <input required id="date" class="auth__input" type="date" placeholder="Дата выполнения">
+                <select id="executor" class="auth__input auth__input" required id="position">
+                    <option selected value="user">Вася</option>
+                    <option value="admin">Не Вася</option>
+                </select>
+                <button id="create-task" class="auth-btn">Создать</button>
+            </form>
+            <button class="add-task-modal__close">
+                <img src="./img/close-icon.svg" alt="">
+            </button>
+        </div>
+    </div>
+
     <script src="./kanban.js"></script>
   </body>
 </html>

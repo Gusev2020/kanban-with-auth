@@ -1,0 +1,38 @@
+.task-container {
+  width: 260px;
+  height: 140px;
+  border-radius: 5px;
+  border: 1px solid $gray-secondary;
+  padding: 25px 11px 17px 32px;
+  color: $gray;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-decor {
+  width: 5px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  background-color: $task-red;
+}
+
+.task-header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.task-comment {
+  display: flex;
+  align-items: center;
+}

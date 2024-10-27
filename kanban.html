@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS CSS HTML Kanban Board</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- <link rel="stylesheet" href="./css/kanban.css" /> -->
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__inner">
+        <div class="header__items">
+          <a class="header__item" href="/">Входящие</a>
+          <a class="header__item" href="/">Уведомления</a>
+          <button class="header__button header__button--new-task">
+            + Добавить задачу
+          </button>
+        </div>
+        <div class="header__user-avatar">
+          <img src="./img/avatar-1.svg" alt="аватар" />
+        </div>
+      </div>
+    </header>
+    <div class="subheader">
+      <div class="subheader__inner">
+        <div class="subheader__info">
+          <div class="subheader__info-project-name">Проект 1</div>
+          <div class="subheader__info-filter">
+            <img src="./img/subheader-filter.svg" alt="" />
+            Фильтры
+          </div>
+        </div>
+        <div class="subheader__actions">
+          <div class="subheader__actions-users">
+            <img src="./img/avatar-1.svg" alt="" />
+          </div>
+          <button class="subheader__actions-share">
+            <img src="./img/share-icon.png" alt="" />
+            Поделиться
+          </button>
+        </div>
+      </div>
+    </div>
+    <aside class="aside">
+      <div class="aside__header">
+        <div class="aside__header-logo">
+          <img src="./img/logo.png" alt="logo" />
+        </div>
+        <div class="menu">
+          <img src="./img/menu.svg" alt="" />
+        </div>
+      </div>
+      <div class="aside__filter">
+        <img src="./img/filter-aside.svg" alt="" />
+        <div class="aside__filter-inner">Фильтр</div>
+      </div>
+      <div class="aside__project">Проект 1</div>
+      <div class="aside__footer">
+        <img src="./img/trash.svg" alt="" />
+        Корзина
+      </div>
+    </aside>
+    <!-- <div class="kanban">
+      <form class="input-container">
+        <div class="fields">
+          <input id="title" placeholder="title..." />
+          <input id="description" placeholder="description..." />
+        </div>
+        <input type="submit" id="submit-button" />
+      </form>
+    </div> -->
+
+    <section class="column-container">
+      <div class="task-column" id="backlog">
+        <h3 class="task-column__title task-column__title--red">
+          Техническое з...
+        </h3>
+        <div class="task-list">
+        </div>
+      </div>
+
+      <div class="task-column" id="doing">
+        <h3 class="task-column__title task-column__title--blue">В работе</h3>
+        <div class="task-list"></div>
+      </div>
+
+      <div class="task-column" id="done">
+        <h3 class="task-column__title task-column__title--green">
+          На доработку
+        </h3>
+        <div class="task-list"></div>
+      </div>
+
+      <div class="task-column" id="discard">
+        <h3 class="task-column__title task-column__title--pink">Готово</h3>
+        <div class="task-list"></div>
+      </div>
+    </section>
+
+    <div class="error-container"></div>
+
+    <script src="./kanban.js"></script>
+  </body>
+</html>

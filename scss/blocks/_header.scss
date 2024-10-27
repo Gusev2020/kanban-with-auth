@@ -1,0 +1,48 @@
+.header {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 100px;
+  width: calc(100% - 290px);
+  margin-left: 290px;
+  background-color: $bg-primary;
+  // padding: 35px 50px;
+  margin-left: 290px;
+  padding-right: 50px;
+  padding-left: 50px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  
+  &__inner  {
+    width: 100%;
+    justify-content: space-between;
+    // padding-top: 50px;/
+    display: flex;
+    align-items: center;
+  }
+
+  &__items {
+    display: flex;
+    align-items: center;
+    gap: 43px;
+  }
+
+  &__item {
+    text-decoration: none;
+    color: $white;
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  &__button {
+    &--new-task {
+      padding: 11px 35px;
+      background-color: $white;
+      font-size: 20px;
+      font-weight: 400;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+  }
+}

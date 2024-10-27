@@ -1,0 +1,53 @@
+.aside {
+  width: 290px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 35px 30px 40px 35px;
+  background-color: $bg-primary;
+  display: flex;
+  flex-direction: column;
+  color: $white;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+
+    &-logo {
+      margin-right: 43px;
+    }
+  }
+
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $gray;
+    font-weight: 400;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 30px;
+    
+    &-inner {
+      width: 100%;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  &__project {
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  &__footer {
+    margin-top: auto;
+    font-weight: 700;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+}

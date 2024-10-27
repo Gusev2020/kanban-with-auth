@@ -1,0 +1,52 @@
+.subheader {
+  position: absolute;
+  top: 100px;
+  width: calc(100% - 290px);
+  height: 80px;
+  padding: 14px 50px;
+  margin-left: 290px;
+  background-color: $bg-violet-light;
+
+  &__inner {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 67px;
+
+    &-project-name {
+      font-size: 36px;
+      font-weight: 400;
+      color: $white;
+    }
+
+    &-filter {
+      font-size: 24px;
+      color: $white;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+
+    &-share {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: 400;
+      background-color: $white;
+      border-radius: 15px;
+      padding: 5px 10px;
+    }
+  }
+}

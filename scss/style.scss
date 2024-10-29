@@ -1,6 +1,7 @@
 @import './reset';
 @import './vars';
 @import './base';
+@import './blocks/custom-checkbox';
 @import './blocks/auth-modal.scss';
 @import './blocks/header.scss';
 @import './blocks/subheader.scss';
@@ -8,4 +9,6 @@
 @import './blocks/kanban.scss';
 @import './blocks/task.scss';
 @import './blocks/add-task-modal.scss';
+@import './blocks/filter-modal.scss';
+@import './blocks/task-modal';
 

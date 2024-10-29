@@ -1,0 +1,47 @@
+.custom-checkbox {
+  display: none; /* Скрываем стандартный чекбокс */
+}
+.custom-label {
+  position: relative;
+  cursor: pointer;
+  padding-left: 30px;
+  line-height: 20px;
+  font-size: 16px;
+}
+
+.custom-label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 23px;
+  height: 24px;
+  border: 3px solid $gray; /* Цвет рамки */
+  border-radius: 6px; /* Закругленные углы */
+  background: white; /* Цвет фона */
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.custom-checkbox:checked + .custom-label:before {
+  background: $white; /* Цвет фона при чекнутом состоянии */
+  border-color: $gray; /* Цвет рамки при чекнутом состоянии */
+}
+
+.custom-label:after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 14px;
+  height: 8px;
+  border: solid #3d3d3d;
+  border-width: 0 2px 2px 0;
+  transform: rotate(57deg);
+  opacity: 0; /* Изначально скрываем галочку */
+  transition: opacity 0.3s;
+  color: $gray;
+}
+
+.custom-checkbox:checked + .custom-label:after {
+  opacity: 1; /* Показываем галочку при чекнутом состоянии */
+}

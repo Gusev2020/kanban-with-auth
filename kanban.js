@@ -14,17 +14,26 @@ const addTaskModal = document.querySelector('.add-task-modal')
 const newTaskTitle = document.querySelector('#title')
 const newTaskDescription = document.querySelector('#description')
 const newTaskDate = document.querySelector('#date')
+
 const createTaskBtn = document.querySelector('#create-task')
 
-const currentUser = JSON.parse(localStorage.getItem('currentUser')) || [];
+// Переменные для фильтрации
 
+const filterBtn = document.querySelector('.subheader__info-filter')
+const filterBtnClose = document.querySelector('.filter-modal__close')
+const filterModal = document.querySelector('.filter-modal')
 
-if(currentUser.role !== 'admin') {
+const currentUser = JSON.parse(localStorage.getItem('currentUser')) || []
+
+if (currentUser.role !== 'admin') {
   addTaskBtn.classList.add('none')
 }
 
 addTaskBtn.addEventListener('click', newTask)
 closeModalAddTaskBtn.addEventListener('click', closeModalAddTask)
+
+filterBtn.addEventListener('click', openModalFilter)
+filterBtnClose.addEventListener('click', closeModalFilter)
 
 // let tasks = [
 //   {
@@ -53,23 +62,18 @@ closeModalAddTaskBtn.addEventListener('click', closeModalAddTask)
 //   },
 // ]
 
-
 // localStorage.setItem('tasks', JSON.stringify(tasks));
 
+const currentTasks = JSON.parse(localStorage.getItem('tasks')) || []
 
-const currentTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-
-taskLists.forEach((taskList) => {  
+taskLists.forEach((taskList) => {
   taskList.addEventListener('dragover', dragOver)
   taskList.addEventListener('drop', dragDrop)
 })
 
-function createTask(taskId, title, description, state, date) {
-  
-  const taskCard = 
-    `
-        <div class="task-container task-container--${state}" draggable="true" data-task-id="${taskId}" data-task-state=${state}>
+function createTask(taskId, title, description, state, date, executor) {
+  const taskCard = `
+        <div class="task-container task-container--${state}" draggable="true" data-task-id="${taskId}" data-task-state="${state}" data-task-date="${date}">
           <div class="task-decor"></div>
           <div class="task-header__wrapper">
             <div class="task-header">${title}</div>
@@ -88,27 +92,27 @@ function createTask(taskId, title, description, state, date) {
       `
 
   let taskCardDrag
-  if(state === 'backlog'){
+  if (state === 'backlog') {
     backlogTasks.insertAdjacentHTML('afterbegin', taskCard)
     taskCardDrag = document.querySelector('.task-container--backlog')
-    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#FF5959';
+    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#FF5959'
   }
-  if(state === 'doing'){
+  if (state === 'doing') {
     doingTasks.insertAdjacentHTML('afterbegin', taskCard)
     taskCardDrag = document.querySelector('.task-container--doing')
-    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#597EFF';
+    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#597EFF'
   }
-  if(state === 'done'){
+  if (state === 'done') {
     doneTasks.insertAdjacentHTML('afterbegin', taskCard)
     taskCardDrag = document.querySelector('.task-container--done')
-    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#59FFCD';
+    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#59FFCD'
   }
-  if(state === 'discard'){
+  if (state === 'discard') {
     discardTasks.insertAdjacentHTML('afterbegin', taskCard)
     taskCardDrag = document.querySelector('.task-container--discard')
-    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#FF59EE';
+    taskCardDrag.querySelector('.task-decor').style.backgroundColor = '#FF59EE'
   }
-  
+
   taskCardDrag.addEventListener('dragstart', dragStart)
 }
 
@@ -124,7 +128,7 @@ function addColor(column) {
     case 'done':
       color = '#59FFCD'
       break
-      case 'discard':
+    case 'discard':
       color = '#FF59EE'
       break
     default:
@@ -134,8 +138,15 @@ function addColor(column) {
 }
 
 function addTasks() {
-  currentTasks.forEach((task) => 
-   createTask(task.id, task.title, task.description, task.state, task.date)
+  currentTasks.forEach((task) =>
+    createTask(
+      task.id,
+      task.title,
+      task.description,
+      task.state,
+      task.date,
+      task.executor
+    )
   )
 }
 
@@ -144,7 +155,7 @@ addTasks()
 let elementBeingDragged
 
 function dragStart() {
-  elementBeingDragged = this  
+  elementBeingDragged = this
 }
 
 function dragOver(e) {
@@ -152,52 +163,71 @@ function dragOver(e) {
 }
 
 function dragDrop() {
-  const columnId = this.parentNode.id  
+  const columnId = this.parentNode.id
   let decor = elementBeingDragged.querySelector('.task-decor')
   decor.style.backgroundColor = addColor(columnId)
   elementBeingDragged.setAttribute('data-task-state', columnId)
   this.append(elementBeingDragged)
-  let taskId = elementBeingDragged.getAttribute('data-task-id')  
+  let taskId = elementBeingDragged.getAttribute('data-task-id')
 
-  currentTasks.forEach(task => {
+  currentTasks.forEach((task) => {
     if (task.id === +taskId) {
       task.state = columnId
-    } 
+    }
   })
 
-
-  localStorage.setItem('tasks', JSON.stringify(currentTasks));
-  
+  localStorage.setItem('tasks', JSON.stringify(currentTasks))
 }
 
-function showError(message) {
-  const errorMessage = document.createElement('p')
-  errorMessage.textContent = message
-  errorMessage.classList.add('error-message')
-  errorContainer.append(errorMessage)
+// Функция для заполнения списка исполнителей
+function populateExecutors() {
+  const executorSelect = document.getElementById('executor')
+  executorSelect.innerHTML = '' // Очищаем текущие options
 
-  setTimeout(() => {
-    errorContainer.textContent = ''
-  }, 2000)
+  // Получаем пользователей из local storage
+  const users = JSON.parse(localStorage.getItem('users')) || []
+
+  // Добавляем пользователей в select
+  users.forEach((user) => {
+    const option = document.createElement('option')
+    option.value = user.fullName // Сохраняем полное имя в value
+    option.textContent = user.fullName // Отображаем полное имя
+    executorSelect.appendChild(option)
+  })
 }
+
+// Вызываем функцию при загрузке страницы
+window.onload = populateExecutors
 
 function addTask(e) {
+  const executorSelect = document.getElementById('executor')
+  const selectedExecutor = executorSelect.value
   e.preventDefault()
   const filteredTitles = currentTasks.filter((task) => {
     return task.title === newTaskTitle.value
   })
 
   if (!filteredTitles.length) {
+    console.log(selectedExecutor)
+
     const newId = currentTasks.length
     currentTasks.push({
       id: newId,
       title: newTaskTitle.value,
       description: newTaskDescription.value,
       date: newTaskDate.value,
-      state: 'backlog'
+      state: 'backlog',
+      executor: selectedExecutor,
     })
-    localStorage.setItem('tasks', JSON.stringify(currentTasks));
-    createTask(newId, newTaskTitle.value, newTaskDescription.value, state = 'backlog', newTaskDate.value)
+    localStorage.setItem('tasks', JSON.stringify(currentTasks))
+    createTask(
+      newId,
+      newTaskTitle.value,
+      newTaskDescription.value,
+      (state = 'backlog'),
+      newTaskDate.value,
+      selectedExecutor
+    )
     addTaskModal.classList.remove('open')
     newTaskTitle.value = ''
     newTaskDescription.value = ''
@@ -208,29 +238,192 @@ function addTask(e) {
 }
 createTaskBtn.addEventListener('click', addTask)
 
-// function deleteTask() {
-//   const headerTitle = this.parentNode.firstChild.textContent
-
-//   const filteredTasks = tasks.filter((task) => {
-//     return task.title === headerTitle
-//   })
-
-//   tasks = tasks.filter((task) => {
-//     return task !== filteredTasks[0]
-//   })
-  
-//   this.parentNode.parentNode.remove()
-// }
-
-
-
 // Добавление новой задачи
 
 function newTask() {
-    addTaskModal.classList.add('open')
+  addTaskModal.classList.add('open')
 }
 
 function closeModalAddTask() {
   addTaskModal.classList.remove('open')
-
 }
+
+// модалка фильтра
+function openModalFilter() {
+  filterModal.classList.add('open')
+}
+
+function closeModalFilter() {
+  filterModal.classList.remove('open')
+}
+
+// Фильтрация задач
+
+const searchInputFilter = document.getElementById('searchInputFilter')
+const checkboxes = document.querySelectorAll('input[type="checkbox"]')
+const cards = document.querySelectorAll('.task-container')
+const resetBtnFilter = document.querySelector('.subheader__info-filter--reset')
+
+function filterTask() {
+  const searchTerm = searchInputFilter.value.toLowerCase()
+  const currentDate = new Date()
+  const selectedFilters = Array.from(checkboxes)
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => checkbox.value)
+
+  cards.forEach((card) => {
+    const dueDate = new Date(card.getAttribute('data-task-date'))
+    const cardText = card.textContent.toLowerCase()
+
+    // Проверяем соответствие поисковому запросу
+    const matchesSearch = cardText.includes(searchTerm)
+
+    // Проверяем фильтр по дате
+    const matchesFilter = selectedFilters.some((filter) => {
+      if (filter === 'overdue') {
+        return dueDate < currentDate
+      } else if (filter === 'dueSoon') {
+        const oneDayFromNow = new Date(currentDate)
+        oneDayFromNow.setDate(currentDate.getDate() + 1)
+        return dueDate >= currentDate && dueDate < oneDayFromNow
+      } else if (filter === 'dueWeek') {
+        const oneWeekFromNow = new Date(currentDate)
+        oneWeekFromNow.setDate(currentDate.getDate() + 7)
+        return dueDate >= currentDate && dueDate < oneWeekFromNow
+      }
+      return false
+    })
+
+    // Показываем или скрываем карточку
+    if (matchesSearch && (selectedFilters.length === 0 || matchesFilter)) {
+      card.style.display = 'flex'
+    } else {
+      card.style.display = 'none'
+    }
+  })
+}
+
+function resetFilters() {
+  searchInputFilter.value = ''
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = false
+  })
+  filterTask() // Применяем сброс
+}
+
+searchInputFilter.addEventListener('input', filterTask)
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', filterTask)
+})
+
+resetBtnFilter.addEventListener('click', resetFilters)
+
+// Разлогин
+
+const logoutBtn = document.querySelector('.header__user-logout')
+logoutBtn.addEventListener('click', logout)
+
+function logout() {
+  localStorage.removeItem('currentUser')
+  window.location.href = 'index.html'
+}
+
+// Модальное окно просмотра задачи
+
+const modalTask = document.querySelector('.task-modal')
+const closeBtnTaskModal = document.querySelector('.task-modal__close')
+const taskModalTitle = document.querySelector('.task-modal__title')
+const taskModalDescription = document.querySelector('.task-modal__description')
+const taskModalDate = document.querySelector('.taskmodal-date-value')
+const taskModalExecutor = document.querySelector('.task-modal__executor')
+const taskModalExecutorSelect = document.querySelector(
+  '.task-modal__input-executor'
+)
+const taskModalDecor = document.querySelector('.task-modal__decor')
+const taskModalBtnDeleteTask = document.querySelector(
+  '.task-modal__delete-task-btn'
+)
+
+// if (currentUser.role === 'admin') {
+//   taskModalExecutor.classList.add('none')
+// }
+
+if (currentUser.role !== 'admin') {
+  taskModalExecutorSelect.classList.add('none')
+}
+
+let currentTaskId = null
+
+function populateExecutorSelect() {
+  const users = JSON.parse(localStorage.getItem('users')) || []
+  taskModalExecutorSelect.innerHTML = '' // Очищаем текущие options
+
+  users.forEach((user) => {
+    const option = document.createElement('option')
+    option.value = user.fullName // Или user.fullName, в зависимости от вашего выбора
+    option.textContent = user.fullName // Отображаем полное имя
+    taskModalExecutorSelect.appendChild(option)
+  })
+}
+
+function openModal(task) {
+  modalTask.classList.add('open')
+  taskModalTitle.textContent = task.title
+  taskModalDescription.textContent = task.description || null
+  taskModalDate.textContent = task.date
+  taskModalExecutor.textContent = task.executor
+  currentTaskId = task.id
+
+  // Устанавливаем выбранного исполнителя в select
+  if (currentUser.role === 'admin') {
+    taskModalExecutorSelect.value = task.executor // Устанавливаем текущее значение исполнителя
+    populateExecutorSelect() // Заполняем список пользователей
+  } else {
+    taskModalExecutorSelect.classList.add('none') // Скрываем select для не-администраторов
+  }
+
+  taskModalDecor.className = 'task-modal__decor' // Сброс стилей
+  taskModalDecor.classList.add(`task-modal__decor--${task.state}`)
+}
+
+function saveChanges() {
+  const tasks = JSON.parse(localStorage.getItem('tasks'))
+  const taskIndex = tasks.findIndex((task) => task.id === currentTaskId)
+
+  if (taskIndex !== -1) {
+    tasks[taskIndex].executor = taskModalExecutorSelect.value // Обновляем исполнителя
+    localStorage.setItem('tasks', JSON.stringify(tasks)) // Сохраняем обновленный массив
+    closeTaskModal() // Закрываем модальное окно
+    location.reload() // Перезагрузите страницу, чтобы отобразить изменения
+  }
+}
+
+const taskContainers = document.querySelectorAll('.task-container')
+
+taskContainers.forEach((container) => {
+  container.addEventListener('click', function () {
+    const taskId = this.getAttribute('data-task-id')
+    const task = JSON.parse(localStorage.getItem('tasks')).find(
+      (t) => t.id == taskId
+    )
+    if (task) {
+      openModal(task)
+    }
+  })
+})
+
+function deleteTask() {
+  const tasks = JSON.parse(localStorage.getItem('tasks'))
+  const updatedTasks = tasks.filter((task) => task.id !== currentTaskId) // Удаляем задачу по ID
+  localStorage.setItem('tasks', JSON.stringify(updatedTasks)) // Обновляем localStorage
+  closeTaskModal() // Закрываем модальное окно
+  location.reload() // Перезагружаем страницу, чтобы отобразить изменения (или обновить задачи)
+}
+
+function closeTaskModal() {
+  modalTask.classList.remove('open')
+}
+
+taskModalBtnDeleteTask.addEventListener('click', deleteTask)
+taskModalExecutorSelect.addEventListener('change', saveChanges)
+closeBtnTaskModal.addEventListener('click', closeTaskModal)

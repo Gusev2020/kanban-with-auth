@@ -1,0 +1,118 @@
+.task-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(#251744, 44%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  &.open {
+    display: flex;
+  }
+  
+  &__decor {
+    height: 54px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    border-radius: 30px 30px 0 0;
+
+    &--backlog {
+      background-color: $task-red;
+    }
+
+    &--doing {
+      background-color: $task-blue;
+    }
+
+    &--done {
+      background-color: $task-green;
+    }
+
+    &--discard {
+      background-color: $task-pink;
+    }
+  }
+
+  &__container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: $white;
+    color: $gray;
+    border-radius: 30px;
+    width: 640px;
+    padding: 40px 40px;
+  }
+
+  &__title {
+    text-align: left;
+    padding-top: 14px;
+    margin-bottom: 21px;
+  }
+
+  &__description-title {
+    font-size: 24px;
+    color: $gray;
+    margin-bottom: 18px;
+  }
+
+  &__description {
+    font-size: 15px;
+    font-weight: 400;
+    color: $gray;
+    margin-bottom: 24px;
+  }
+
+  &__date {
+    margin-bottom: 23px;
+    font-size: 15px;
+    font-weight: 400;
+    color: $gray;
+  }
+
+  &__input {
+    padding: 17px 30px;
+    border: 2px solid $gray;
+    color: $gray;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-bottom: 30px;
+
+    &::placeholder {
+      font-size: 15px;
+      color: $gray;
+    }
+  }
+
+  &__executor {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: $gray-secondary;
+  }
+
+  &__input-executor {
+    margin-bottom: 30px;
+  } 
+
+  &__close {
+    position: absolute;
+    right: 0px;
+    top: 50px;
+    z-index: 100;
+    cursor: pointer;
+  }
+
+  &__delete-task-btn {
+    padding: 15px 20px;
+    background-color: $task-red;
+    border-radius: 10px;
+    color: $white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+}

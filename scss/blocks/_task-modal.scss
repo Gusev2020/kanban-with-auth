@@ -51,7 +51,7 @@
 
   &__title {
     text-align: left;
-    padding-top: 14px;
+    padding-top: 35px;
     margin-bottom: 21px;
   }
 
@@ -114,5 +114,40 @@
     color: $white;
     font-size: 24px;
     cursor: pointer;
+  }
+
+  &__comments {
+    &-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    &-username {
+      color: $gray;
+      font-size: 15px;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    &-date {
+      font-size: 12px;
+      font-style: normal !important;
+    } 
+
+    &-text {
+      width: 100%;
+      background-color: #D9D9D9;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: $gray;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
   }
 }

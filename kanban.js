@@ -232,6 +232,7 @@ function addTask(e) {
     newTaskTitle.value = ''
     newTaskDescription.value = ''
     newTaskDate.value = ''
+    location.reload()
   } else {
     showError('Title must be unique!')
   }
@@ -283,6 +284,8 @@ function filterTask() {
       if (filter === 'overdue') {
         return dueDate < currentDate
       } else if (filter === 'dueSoon') {
+        console.log(dueDate)
+
         const oneDayFromNow = new Date(currentDate)
         oneDayFromNow.setDate(currentDate.getDate() + 1)
         return dueDate >= currentDate && dueDate < oneDayFromNow
@@ -344,10 +347,6 @@ const taskModalBtnDeleteTask = document.querySelector(
   '.task-modal__delete-task-btn'
 )
 
-// if (currentUser.role === 'admin') {
-//   taskModalExecutor.classList.add('none')
-// }
-
 if (currentUser.role !== 'admin') {
   taskModalExecutorSelect.classList.add('none')
 }
@@ -384,6 +383,8 @@ function openModal(task) {
 
   taskModalDecor.className = 'task-modal__decor' // Сброс стилей
   taskModalDecor.classList.add(`task-modal__decor--${task.state}`)
+
+  loadComments() // Загружаем комментарии
 }
 
 function saveChanges() {
@@ -427,3 +428,58 @@ function closeTaskModal() {
 taskModalBtnDeleteTask.addEventListener('click', deleteTask)
 taskModalExecutorSelect.addEventListener('change', saveChanges)
 closeBtnTaskModal.addEventListener('click', closeTaskModal)
+
+// Добавление комментария
+
+if (!localStorage.getItem('comments')) {
+  localStorage.setItem('comments', JSON.stringify([]))
+}
+
+const taskModalComments = document.querySelector('.task-modal__comments')
+const commentInput = document.querySelector('.task-modal__input')
+
+function saveComment() {
+  const text = commentInput.value.trim()
+  if (text) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+    const comments = JSON.parse(localStorage.getItem('comments')) || []
+    const timestamp = new Date().toLocaleString() // Получаем текущую дату и время
+
+    comments.push({
+      taskId: currentTaskId,
+      text,
+      userName: currentUser.fullName, // Имя пользователя
+      date: timestamp, // Дата и время
+    })
+
+    localStorage.setItem('comments', JSON.stringify(comments))
+    commentInput.value = '' // Очищаем поле ввода
+    loadComments() // Перезагружаем комментарии
+  }
+}
+
+function loadComments() {
+  const comments = JSON.parse(localStorage.getItem('comments')) || []
+  const taskComments = comments.filter(
+    (comment) => comment.taskId === currentTaskId
+  )
+
+  taskModalComments.innerHTML = '' // Очищаем текущие комментарии
+
+  taskComments.forEach((comment) => {
+    const commentElement = document.createElement('div')
+    commentElement.className = 'task-modal__comments-item'
+    commentElement.innerHTML = `<div class="task-modal__comments-header">
+            <div class="task-modal__comments-username">${comment.userName}</div>
+            <div class="task-modal__comments-date">${comment.date}</div>
+          </div>
+          <div class="task-modal__comments-text">${comment.text}</div>`
+    taskModalComments.appendChild(commentElement)
+  })
+}
+
+commentInput.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    saveComment()
+  }
+})

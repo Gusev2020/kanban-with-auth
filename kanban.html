@@ -68,16 +68,6 @@
         Корзина
       </div>
     </aside>
-    <!-- <div class="kanban">
-      <form class="input-container">
-        <div class="fields">
-          <input id="title" placeholder="title..." />
-          <input id="description" placeholder="description..." />
-        </div>
-        <input type="submit" id="submit-button" />
-      </form>
-    </div> -->
-
     <section class="column-container">
       <div class="task-column" id="backlog">
         <h3 class="task-column__title task-column__title--red">
@@ -135,15 +125,15 @@
           <div class="filter-modal__checkbox-wrapper">
             <div class="filter-modal__checkbox-title">Срок</div>
             <div class="filter-modal__checkbox-content">
-              <input type="checkbox" id="overdue" class="custom-checkbox">
+              <input type="checkbox" id="overdue" class="custom-checkbox" value="overdue">
               <label for="overdue" class="custom-label filter-modal__checkbox-descr filter-modal__checkbox-descr--red">Просроченные</label>
             </div>
             <div class="filter-modal__checkbox-content">
-              <input type="checkbox" id="dueSoon" class="custom-checkbox">
+              <input type="checkbox" id="dueSoon" class="custom-checkbox" value="dueSoon">
               <label for="dueSoon" class="custom-label filter-modal__checkbox-descr filter-modal__checkbox-descr--warning">Истекает в течение суток</label>
             </div>
             <div class="filter-modal__checkbox-content">
-              <input type="checkbox" id="dueWeek" class="custom-checkbox">
+              <input type="checkbox" id="dueWeek" class="custom-checkbox" value="dueWeek">
               <label for="dueWeek" class="custom-label filter-modal__checkbox-descr filter-modal__checkbox-descr--succsess">Истекает в течение недели</label>
             </div>
           </div>
@@ -168,6 +158,9 @@
         <button class="task-modal__close">
           <img src="./img/close-icon.svg" alt="">
         </button>
+        <div class="task-modal__comments">
+
+        </div>
         <button class="task-modal__delete-task-btn" id="delete-button">Удалить задачу</button>
       </div>
     </div>
